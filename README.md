@@ -1,3 +1,4 @@
-﻿# eJPT Study Notes 
+﻿# eJPTv2 Study Notes 
 
 When I pursued my eJPT certification, the Situation was my goal to formally validate my practical cybersecurity skills and demonstrate proficiency in penetration testing methodologies. The Task at hand was to successfully complete the hands-on, live-network exam within the 48-hour time limit, which required me to systematically perform reconnaissance, vulnerability analysis, exploitation, and pivoting to answer all 20 questions correctly. My Action involved meticulously documenting my process, from initial network mapping with Nmap to exploiting a vulnerable service with Metasploit and leveraging a reverse shell to pivot into a new network. I used tools like Wireshark for traffic analysis and brute-force tools to gain access to a critical system, all while keeping a clear record of my steps and findings. As a Result, I successfully compromised the target systems, answered all the exam questions, and earned my eJPT certification, proving my ability to apply foundational penetration testing skills in a real-world, simulated environment.
+

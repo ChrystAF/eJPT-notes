@@ -72,3 +72,45 @@ eJPT Reconnaissance Tools
 - **Purpose**: A website that checks if an email address or password has been compromised in a data breach.
 - **How to use**: Go to the website and enter an email address or password.
 - **When to use**: Use this to verify if any credentials for a target have been leaked online, which can be useful for validating potential passwords found through other means.
+
+# Information Gathering - Active
+
+## **wafw00f {CMD}**
+- **Purpose**: A command-line tool that identifies and fingerprints Web Application Firewalls (WAFs).
+- **How to use**: Run `wafw00f <website-url>` in your terminal.
+- **When to use**: Use this to determine if a website is protected by a WAF. Knowing this is crucial for penetration testing, as a WAF can block common attack payloads.
+
+## **dnsenum {CMD}**
+- **Purpose**: A command-line tool for DNS enumeration, including zone transfers and brute-force methods.
+- **How to use**: Run `dnsenum <domain-name>` in your terminal.
+- **When to use**: Use this to gather DNS information such as host records, mail servers, and name servers. It can also attempt a zone transfer, which can reveal a full list of all hosts for a domain.
+
+## **dnsrecon {CMD}**
+- **Purpose**: A command-line tool for comprehensive DNS record discovery.
+- **How to use**: Run `dnsrecon -d <domain-name>` in your terminal.
+- **When to use**: Use this to perform various DNS lookups, including standard record types (A, MX, SOA, etc.), and to identify subdomains and cached records.
+
+## **nmap {CMD}**
+- **Purpose**: A powerful network scanner used for network discovery and security auditing.
+- **How to use**: Run `nmap <target>` in your terminal. Options like `-sV` (version detection) and `-p-` (all ports) are common.
+- **When to use**: This is an essential tool for discovering hosts and services on a network, identifying open ports, and fingerprinting operating systems.
+
+## **netdiscover {CMD}**
+- **Purpose**: A tool for ARP-based host discovery on a network.
+- **How to use**: Run `netdiscover -i <interface>` in your terminal.
+- **When to use**: Use this to actively scan your local network to discover live hosts without needing to ping them, which is useful when ICMP is blocked.
+
+## **ping/fping {CMD}**
+- **Purpose**: `ping` is a command-line utility that tests reachability of a host on an IP network. `fping` is a more efficient version for multiple hosts.
+- **How to use**: Run `ping <target-ip>` or `fping -a -g <subnet>`.
+- **When to use**: Use these for basic host discovery to determine if a target is alive and to measure network latency.
+
+## **arp-scan {CMD}**
+- **Purpose**: A tool that uses ARP to discover hosts on a local network.
+- **How to use**: Run `arp-scan --interface=<interface> <ip-range>` in your terminal.
+- **When to use**: This is a very effective tool for discovering all devices on a local subnet, as ARP does not rely on ping and works even when ICMP is blocked.
+
+## **route -n {CMD}**
+- **Purpose**: A command-line utility to view and manipulate the IP routing table.
+- **How to use**: Run `route -n` in your terminal.
+- **When to use**: Use this to understand the network topology, identify the default gateway, and map out the paths that network traffic takes to reach different destinations.

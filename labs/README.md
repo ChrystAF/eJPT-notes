@@ -1,4 +1,5 @@
 # Post-Exploitation
+Gaining accecss with a goal to get into a shell
 
 ## Privilege Escalation
 

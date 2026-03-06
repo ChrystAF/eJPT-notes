@@ -27,7 +27,7 @@ nmap -O target_ip
 nmap -p 21,22,80,443 target_ip
 ```
 
-# Usful Enumeration Tools
+# Useful Enumeration Tools
 ```
 #enum4linux -a target_ip
 

@@ -1,7 +1,12 @@
-# Reconnaissance Tools
+# Tools Index
 
-This folder contains notes about the tools and commands I used or learn about while studying for the eJPT exam.
-eJPT Reconnaissance Tools
+Notes on the tools I used while studying for the eJPT: what each one is **for**, **how** to run it, and **when** to reach for it. Organized by engagement phase so you can find the right tool for the phase you're in.
+
+**Jump to:** [Recon](#recon-passive) · [Active info-gathering](#information-gathering---active) · [Scanning & Enumeration](#scanning--enumeration-tools) · [Web](#web-tools) · [Password attacks](#password-attack-tools) · [Exploitation](#exploitation-tools) · [Post-exploitation](#post-exploitation-tools)
+
+See also: [enumeration playbooks](../enumeration/README.md) · [cheatsheets](../cheatsheets/README.md)
+
+## Recon (Passive)
 
 ## **host {CMD}**
 - **Purpose**: A command-line tool for performing DNS lookups.
@@ -114,3 +119,112 @@ eJPT Reconnaissance Tools
 - **Purpose**: A command-line utility to view and manipulate the IP routing table.
 - **How to use**: Run `route -n` in your terminal.
 - **When to use**: Use this to understand the network topology, identify the default gateway, and map out the paths that network traffic takes to reach different destinations.
+
+# Scanning & Enumeration Tools
+
+## **nmap {CMD}** — scanning
+- **Purpose**: The core network/port scanner. Covered under active recon above; listed here too because it's the backbone of the scanning phase.
+- **Key flags**: `-sn` (host discovery), `-p-` (all ports), `-sV` (versions), `-sC` (default scripts), `-A` (aggressive), `-sU` (UDP), `-oN file` (save output), `--script` (NSE scripts).
+- **When to use**: First thing against every host — find open ports, then re-scan the open ones with `-sV -sC`.
+
+## **enum4linux {CMD}**
+- **Purpose**: All-in-one SMB enumeration for Windows/Samba hosts.
+- **How to use**: `enum4linux -a <ip>`.
+- **When to use**: Any time 139/445 is open — pulls users, shares, OS, and password policy in one shot.
+
+## **smbclient / smbmap {CMD}**
+- **Purpose**: `smbclient` connects to SMB shares like an FTP client; `smbmap` lists shares with read/write permissions.
+- **How to use**: `smbclient -L //<ip>/ -N`, `smbclient //<ip>/<share> -N`, `smbmap -H <ip>`.
+- **When to use**: After finding SMB — look for readable/writable shares and loot.
+
+## **snmpwalk {CMD}**
+- **Purpose**: Walks an SNMP tree to dump system info.
+- **How to use**: `snmpwalk -v2c -c public <ip>`.
+- **When to use**: When UDP 161 is open — can leak processes, software, and user accounts.
+
+## **nikto {CMD}**
+- **Purpose**: Web server vulnerability scanner.
+- **How to use**: `nikto -h http://<ip>`.
+- **When to use**: Quick first pass on a web server to flag outdated software and common misconfigs.
+
+# Web Tools
+
+## **gobuster / ffuf / dirb {CMD}**
+- **Purpose**: Directory and file brute-forcing (content discovery).
+- **How to use**: `gobuster dir -u http://<ip> -w <wordlist> -x php,txt`, `ffuf -u http://<ip>/FUZZ -w <wordlist>`.
+- **When to use**: On every web server — find hidden pages, admin panels, and uploads.
+
+## **Burp Suite {GUI}**
+- **Purpose**: Intercepting proxy to view, modify, and replay HTTP requests.
+- **How to use**: Set browser proxy to 127.0.0.1:8080; use Proxy → Intercept and Repeater.
+- **When to use**: The central web-testing tool — manual injection testing, tampering parameters, replaying login requests.
+
+## **sqlmap {CMD}**
+- **Purpose**: Automated SQL injection detection and exploitation.
+- **How to use**: `sqlmap -u "http://<ip>/p.php?id=1" --batch --dbs`; for forms, `sqlmap -r request.txt`.
+- **When to use**: Any parameter that reacts to a `'` — dump databases and credentials.
+
+## **wpscan {CMD}**
+- **Purpose**: WordPress enumeration and vuln scanner.
+- **How to use**: `wpscan --url http://<ip> --enumerate u,p`.
+- **When to use**: When WhatWeb/source shows WordPress — enumerate users, plugins, and weak passwords.
+
+# Password Attack Tools
+
+## **hydra {CMD}**
+- **Purpose**: Online brute-forcer for network logins.
+- **How to use**: `hydra -l <user> -P <wordlist> ssh://<ip>` (also ftp, http-form, rdp).
+- **When to use**: Once you have a likely username — target a service's login. Don't blind-brute on the exam; enumerate the username first.
+
+## **john / hashcat {CMD}**
+- **Purpose**: Offline hash cracking.
+- **How to use**: `john --format=NT hashes.txt`, `hashcat -m 1000 hashes.txt rockyou.txt`.
+- **When to use**: After dumping hashes (SAM, `/etc/shadow`, DB dumps) — recover plaintext passwords to reuse.
+
+## **Wordlists {Reference}**
+- **rockyou.txt**: `/usr/share/wordlists/rockyou.txt` — the default password list.
+- **dirb/common.txt, SecLists**: `/usr/share/wordlists/` — directories and more. SecLists is the broadest collection.
+
+# Exploitation Tools
+
+## **searchsploit {CMD}**
+- **Purpose**: Offline search of Exploit-DB.
+- **How to use**: `searchsploit <product> <version>`, `searchsploit -m <id>` to copy locally.
+- **When to use**: After enumeration — match a service version to a public exploit.
+
+## **Metasploit (msfconsole) {CMD}**
+- **Purpose**: Exploitation framework — modules, payloads, session management.
+- **How to use**: `search` → `use` → `set` options → `run`. Catch manual payloads with `multi/handler`.
+- **When to use**: Fast, reliable exploitation and post-exploitation; the exam allows it. Full workflow in [exploitation](../exploitation/README.md).
+
+## **msfvenom {CMD}**
+- **Purpose**: Standalone payload generator.
+- **How to use**: `msfvenom -p <payload> LHOST=<ip> LPORT=4444 -f <format> -o out`.
+- **When to use**: Build a reverse shell to upload/deliver, then catch it with a listener or `multi/handler`.
+
+## **netcat (nc) {CMD}**
+- **Purpose**: Swiss-army networking tool — listeners, banner grabbing, file transfer.
+- **How to use**: `nc -lvnp 4444` (listener), `nc <ip> <port>` (connect/banner), `nc <ip> 4444 < file` (transfer).
+- **When to use**: Catch reverse shells, grab service banners, move files.
+
+# Post-Exploitation Tools
+
+## **linpeas / winPEAS {Scripts}**
+- **Purpose**: Automated privilege-escalation enumeration for Linux / Windows.
+- **How to use**: Transfer to target and run; read the highlighted findings.
+- **When to use**: Immediately after getting a shell — surfaces SUID, sudo, cron, tokens, and misconfigs. See [privilege-escalation](../privilege-escalation/README.md).
+
+## **GTFOBins / LOLBAS {Websites}**
+- **Purpose**: Catalogs of how to abuse legitimate binaries for privesc/bypass (GTFOBins = Linux, LOLBAS = Windows).
+- **How to use**: Look up any binary you can run as root / that's SUID.
+- **When to use**: When `sudo -l` or an SUID search returns a binary — the escape is almost always listed.
+
+## **mimikatz {CMD}**
+- **Purpose**: Dumps Windows credentials and hashes from memory.
+- **How to use**: `privilege::debug` then `sekurlsa::logonpasswords`.
+- **When to use**: After reaching SYSTEM/admin on Windows — harvest creds to reuse and pivot.
+
+## **chisel / proxychains {CMD}**
+- **Purpose**: Tunneling and proxying to pivot into internal networks.
+- **How to use**: See [pivoting](../pivoting/README.md).
+- **When to use**: When a compromised host reaches a subnet you can't — route your tools through it.
